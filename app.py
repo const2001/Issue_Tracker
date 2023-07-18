@@ -2,9 +2,9 @@ from flask import Flask, render_template, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:mysecretpassword@localhost:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:mysecretpassword@localhost:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'your-secret-key'
+app.config['SECRET_KEY'] = "mykey"
 
 db = SQLAlchemy(app)
 
@@ -20,7 +20,6 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
-
     role = db.relationship('Role', backref=db.backref('users', lazy='dynamic'))
 
 class Admin(db.Model):
@@ -28,6 +27,12 @@ class Admin(db.Model):
     username = db.Column(db.String(50), unique=True)
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(128))
+
+class Issue(db.Model):
+    id = db.Column(db.Integer, primary_key=True) 
+    title = db.Column(db.String(50))
+    status = db.Column(db.String(50))
+      
 
 # Routes and Views
 
@@ -38,12 +43,15 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        role_id = request.form['role_id']
+        # username = request.form['username']
+        # email = request.form['email']
+        # password = request.form['password']
+        data = request.json
+        username = data.get("username")
+        email = data.get("email")
+        password = data.get("password")
         
-        user = User(username=username, email=email, password=password, role_id=role_id)
+        user = User(username=username, email=email, password=password, role_id=1)
         db.session.add(user)
         db.session.commit()
         
@@ -56,8 +64,11 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        # username = request.form['username']
+        # password = request.form['password']
+        data = request.json
+        username = data.get("username")
+        password = data.get("password")
         
         user = User.query.filter_by(username=username).first()
         
