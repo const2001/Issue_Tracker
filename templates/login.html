@@ -9,13 +9,16 @@
 </head>
 <body>
     <div class="wrapper">
-        <form class="form-signin">       
+        <form class="form-signin" method="post" action="{{ url_for('login') }}">       
           <h2 class="form-signin-heading">Please login</h2>
-          <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" />
-          <input type="password" class="form-control" name="password" placeholder="Password" required=""/>      
+          <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" id="username" />
+          <input type="password" class="form-control" name="password" placeholder="Password" id="password" required="" />      
           
-          <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>   
+          <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>  
+          {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+            {% endif %} 
         </form>
-      </div>
+    </div>
 </body>
 </html>

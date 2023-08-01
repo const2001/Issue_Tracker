@@ -23,11 +23,6 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
     role = db.relationship('Role', backref=db.backref('users', lazy='dynamic'))
 
-class Admin(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True)
-    email = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(128))
 
 class Issue(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
@@ -44,13 +39,14 @@ def check_role(user, role_name):
 @app.route('/')
 def index():
     user_id = session.get('user_id')
-    print(user_id)
+    
     if user_id:
-        user = User.query.get(user_id)
-        if check_role(user, 'admin'):
-            print("admin")
+        user = db.session.get(User, user_id)
+        
+        if user and check_role(user, 'Admin'):
+            
             return render_template('admin.html', username=user.username)
-        elif check_role(user, 'user'):
+        elif user and check_role(user, 'User'):
             return render_template('user.html', username=user.username)
     return render_template('login.html')
 
@@ -76,16 +72,16 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
         user = User.query.filter_by(username=username).first()
-        
+
         if user and user.password == password:
-            session['user_id'] = user.id  # Store the user's ID in the session
+            session['user_id'] = user.id
             flash('Login successful.')
             return redirect('/')
         else:
-            flash('Invalid username or password.')
-    
+            error_message = 'Invalid username or password.'
+            return render_template('login.html', error_message=error_message)
+
     return render_template('login.html')
 
 @app.route('/logout')
