@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, session
+from flask import Flask, render_template, request, redirect, flash, session ,jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -26,7 +26,9 @@ class User(db.Model):
 
 class Issue(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
-    title = db.Column(db.String(50))
+    name = db.Column(db.String(50))
+    phone = db.Column(db.String(50))
+    issue_description = db.Column(db.String(50))
     status = db.Column(db.String(50))
 
 def check_role(user, role_name):
@@ -88,6 +90,42 @@ def login():
 def logout():
     session.pop('user_id', None)
     return redirect('/')
+
+
+@app.route('/add_issue',methods = ['POST'])
+def add_issue():
+    user_id = session.get('user_id')
+    user = db.session.get(User, user_id)
+    data = request.json
+    name = user.username
+    phone = data['phone']
+    issue_description = data['issue_description']
+    status = data['status']
+    issue = Issue(name,phone,issue_description,status)
+    try :
+      db.session.add(issue)
+      db.session.commit
+      return jsonify({'issue': issue , 'message': 'issue added successfully'}) 
+    except Exception as e:
+      return jsonify({'error': e})
+    
+@app.route('/get_issues',methods = ['GET'])   
+def get_issues():
+    issues = db.session.query(Issue).all() 
+    if issues:
+        return jsonify(issues)
+    return None
+    
+@app.route('/update_status',methods =['PUT'] )   
+def update_status():
+    return None
+
+    
+       
+
+    
+    
+
 
 if __name__ == '__main__':
     app.run(debug=True)
