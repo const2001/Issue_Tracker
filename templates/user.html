@@ -6,6 +6,82 @@
 
 </head>
 <body>
-    <h1>user page</h1>
+    <div class="wrapper">
+        <div class="header">
+          <div class="title">
+            Customer Issue Tracker
+          </div>
+      
+          <div class="search_box">
+            <input type="text" id="search_input" placeholder="Fliter Table Using Names">
+          </div>
+        </div>
+      
+        <div class="table_wrap">
+          <div class="table_header">
+            <ul>
+              <li>
+                <div class="item">
+                  <div class="name">
+                    <span>NAME</span>
+                  </div>
+                  <div class="phone">
+                    <span>PHONE</span>
+                  </div>
+                  <div class="issue">
+                    <span>ISSUE</span>
+                  </div>
+                  <div class="status">
+                    <span>STATUS</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="table_body">
+            <ul>
+                {% for issue in issues %}
+                <li>
+                    <div class="item">
+                        <div class="name">
+                            <span>{{ issue['name'] }}</span>
+                        </div>
+                        <div class="phone">
+                            <span>{{ issue['phone'] }}</span>
+                        </div>
+                        <div class="issue">
+                            <span>{{ issue['issue'] }}</span>
+                        </div>
+                        <div class="status">
+                            <span class="{{ issue['status'].lower() }}">{{ issue['status'] }}</span>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+          <div class="table_footer"></div>
+        </div>
+      
+      </div>
 </body>
+<script>
+    var search_input = document.querySelector("#search_input");
+
+search_input.addEventListener("keyup", function(e){
+  var span_items = document.querySelectorAll(".table_body ul li .item .name span");
+  var search_item = e.target.value.toLowerCase();
+ 
+ span_items.forEach(function(item){
+   if(item.textContent.toLowerCase().indexOf(search_item) != -1){
+      item.closest("li").style.display = "block"
+   }
+   else{
+     item.closest("li").style.display = "none";
+   }
+ })
+  
+});
+
+</script>
 </html>
