@@ -3,9 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
 </head>
 <body>
-    <h1>user page</h1>
+    <div class="sidebar">
+        <!-- Sidebar content goes here -->
+        <h1>User Dashboard</h1>
+        <ul>
+            <li>Dashboard</li>
+            <li>Profile</li>
+            <li>Settings</li>
+            <!-- Add more menu items as needed -->
+        </ul>
+    </div>
+
+    <div class="content">
+        <!-- Content area goes here -->
+        <header>
+            <h2>Welcome, User!</h2>
+            <a href="#">Logout</a>
+        </header>
+        <div class="main">
+            <h3>Dashboard Overview</h3>
+            <!-- Add your dashboard content here -->
+        </div>
+    </div>
 </body>
 </html>
