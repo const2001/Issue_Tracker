@@ -92,7 +92,7 @@ def logout():
     return redirect('/')
 
 
-@app.route('/add_issue',methods = ['POST'])
+@app.route('/add_issue', methods=['POST'])
 def add_issue():
     user_id = session.get('user_id')
     user = db.session.get(User, user_id)
@@ -101,13 +101,13 @@ def add_issue():
     phone = data['phone']
     issue_description = data['issue_description']
     status = data['status']
-    issue = Issue(name,phone,issue_description,status)
-    try :
-      db.session.add(issue)
-      db.session.commit
-      return jsonify({'issue': issue , 'message': 'issue added successfully'}) 
+    issue = Issue(name, phone, issue_description, status)
+    try:
+        db.session.add(issue)
+        db.session.commit()  # Corrected line
+        return jsonify({'issue': issue, 'message': 'issue added successfully'}) 
     except Exception as e:
-      return jsonify({'error': e})
+        return jsonify({'error': str(e)})
     
 @app.route('/get_issues',methods = ['GET'])   
 def get_issues():
