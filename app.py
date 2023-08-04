@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, session ,jsonify
+from flask import Flask, render_template, request, redirect, flash, session ,jsonify,json
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -23,6 +23,12 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
     role = db.relationship('Role', backref=db.backref('users', lazy='dynamic'))
 
+    def __init__(self, username, email, password, role_id):
+        self.name = username
+        self.email = email
+        self.password = password
+        self.role_id = role_id
+
 
 class Issue(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
@@ -30,6 +36,12 @@ class Issue(db.Model):
     phone = db.Column(db.String(50))
     issue_description = db.Column(db.String(50))
     status = db.Column(db.String(50))
+
+    def __init__(self, name, phone, issue_description, status):
+        self.name = name
+        self.phone = phone
+        self.issue_description = issue_description
+        self.status = status
 
 def check_role(user, role_name):
     return user.role.name == role_name
@@ -94,18 +106,27 @@ def logout():
 
 @app.route('/add_issue', methods=['POST'])
 def add_issue():
-    user_id = session.get('user_id')
-    user = db.session.get(User, user_id)
+   # user_id = session.get('user_id')
+    #user = db.session.get(User, user_id)
     data = request.json
-    name = user.username
+    print(request.data)
+    name = "fg"
     phone = data['phone']
     issue_description = data['issue_description']
     status = data['status']
-    issue = Issue(name, phone, issue_description, status)
+    issue = Issue(name=name, phone=phone, issue_description=issue_description, status=status)
+
     try:
         db.session.add(issue)
         db.session.commit()  # Corrected line
-        return jsonify({'issue': issue, 'message': 'issue added successfully'}) 
+        serialized_issue = {
+            'id': issue.id,
+            'name': issue.name,
+            'phone': issue.phone,
+            'issue_description': issue.issue_description,
+            'status': issue.status
+        }
+        return jsonify({'issue': serialized_issue, 'message': 'issue added successfully'}) 
     except Exception as e:
         return jsonify({'error': str(e)})
     
@@ -127,17 +148,36 @@ def get_issues():
     
     return jsonify(serialized_issues)
 
-    
-@app.route('/update_status',methods =['PUT'] )   
-def update_status():
-    return None
 
-    
-       
 
-    
-    
 
+
+@app.route('/update_issue/<int:issue_id>', methods=['PUT'])
+def update_issue(issue_id):
+    print(request.data)
+    data = request.json
+    print(data)
+    new_status = data['status']
+
+    if new_status is None:
+        return jsonify({'error': 'New status not provided'}), 400
+
+    try:
+        issue = db.session.query(Issue).get(issue_id)
+        if issue is None:
+            return jsonify({'error': 'Issue not found'}), 404
+
+        issue.status = new_status
+        db.session.commit()
+
+        return jsonify({'message': 'Issue status updated successfully'})
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+    
