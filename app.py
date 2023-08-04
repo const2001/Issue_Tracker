@@ -109,12 +109,24 @@ def add_issue():
     except Exception as e:
         return jsonify({'error': str(e)})
     
-@app.route('/get_issues',methods = ['GET'])   
+
+@app.route('/get_issues', methods=['GET'])
 def get_issues():
-    issues = db.session.query(Issue).all() 
-    if issues:
-        return jsonify(issues)
-    return None
+    issues = db.session.query(Issue).all()
+    
+    serialized_issues = []
+    for issue in issues:
+        serialized_issue = {
+            'id': issue.id,
+            'name': issue.name,
+            'phone': issue.phone,
+            'issue_description': issue.issue_description,
+            'status': issue.status
+        }
+        serialized_issues.append(serialized_issue)
+    
+    return jsonify(serialized_issues)
+
     
 @app.route('/update_status',methods =['PUT'] )   
 def update_status():
