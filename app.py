@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, session ,jsonify,json
+from flask import Flask, render_template, request, redirect, flash, session ,jsonify,json,url_for
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -104,31 +104,25 @@ def logout():
     return redirect('/')
 
 
-@app.route('/add_issue', methods=['POST'])
+@app.route('/add_issue', methods=['POST', 'GET'])
 def add_issue():
-   # user_id = session.get('user_id')
-    #user = db.session.get(User, user_id)
-    data = request.json
-    print(request.data)
-    name = "fg"
-    phone = data['phone']
-    issue_description = data['issue_description']
-    status = data['status']
-    issue = Issue(name=name, phone=phone, issue_description=issue_description, status=status)
+    if request.method == 'POST':
+        name = request.form['name'] 
+        phone = request.form['phone']
+        issue_description = request.form['issue_description']
+        status = request.form['status']
 
-    try:
-        db.session.add(issue)
-        db.session.commit()  # Corrected line
-        serialized_issue = {
-            'id': issue.id,
-            'name': issue.name,
-            'phone': issue.phone,
-            'issue_description': issue.issue_description,
-            'status': issue.status
-        }
-        return jsonify({'issue': serialized_issue, 'message': 'issue added successfully'}) 
-    except Exception as e:
-        return jsonify({'error': str(e)})
+        issue = Issue(name=name, phone=phone, issue_description=issue_description, status=status)
+
+        try:
+            db.session.add(issue)
+            db.session.commit()
+            return redirect(url_for('add_issue'))  # Redirect to the same page after adding
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': str(e)})
+
+    return render_template('addIssue.html')
     
 
 @app.route('/get_issues', methods=['GET'])
