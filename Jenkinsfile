@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        ANSIBLE_HOSTS = 'azurehosts'
+        ANSIBLE_HOSTS = '20.0.161.2'
         ANSIBLE_REMOTE_USER = 'azureuser'
         ANSIBLE_PLAYBOOK = '~/workspace/ansible-pipeline/anslible_playbook_flask_setup.yml'
     }
