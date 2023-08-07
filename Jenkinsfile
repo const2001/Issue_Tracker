@@ -26,10 +26,5 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            // Clean up resources, if necessary
-            // You can add cleanup steps here
-        }
-    }
+
 }
