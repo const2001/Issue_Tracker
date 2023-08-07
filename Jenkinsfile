@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Clone the GitHub repository
-                git branch: 'main', url: "${env.GITHUB_URL}/${env.GITHUB_REPOSITORY}.git", credentialsId: 'your-git-credentials'
+                git branch: 'main', url: "${env.GITHUB_URL}/${env.GITHUB_REPOSITORY}.git"
             }
         }
 
