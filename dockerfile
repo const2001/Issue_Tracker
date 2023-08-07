@@ -1,23 +1,17 @@
-# Use an official Python runtime as the base image
-FROM python:3.8
+# This is an official Python runtime, used as the parent image
+FROM python:3.6.5-slim
 
-# Set the working directory within the container
+# Set the working directory in the container to /app
 WORKDIR /app
 
-# Copy the requirements file into the container at /app
-COPY requirements.txt /app/
+# Add the current directory to the container as /app
+ADD . /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Upgrade pip and install the required dependencies
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy the rest of the application code into the container at /app
-COPY . /app/
-
-# Make port 5000 available to the world outside this container
+# Unblock port 8000 for the Flask app to run on
 EXPOSE 8000
 
-# Define environment variable for Flask
-ENV FLASK_APP=app.py
-
-# Run the command to start the Flask application
-CMD ["flask", "run", "--host", "0.0.0.0"]
+# Execute the Flask app and the Kafka producer and consumer
+CMD ["python", "app.py"]
