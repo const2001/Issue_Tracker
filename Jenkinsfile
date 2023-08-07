@@ -23,7 +23,7 @@ pipeline {
                 script {
                     try {
                         // Run the Ansible playbook using the 'ansible-playbook' command
-                          def ansibleCmd = "ansible-playbook -i ${ANSIBLE_HOSTS}, -u ${ANSIBLE_REMOTE_USER} ${ANSIBLE_PLAYBOOK}"
+                          def ansibleCmd = "ansible-playbook ${ANSIBLE_PLAYBOOK}"
                         sh ansibleCmd
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
