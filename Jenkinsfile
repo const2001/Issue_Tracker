@@ -3,7 +3,7 @@ pipeline {
 
 
     stages {
-        stage('Preparation') {
+        stage('Clone') {
             steps {
                 // Clean up the workspace before starting the build
                 deleteDir()
@@ -11,6 +11,17 @@ pipeline {
                 // Clone the GitHub repository
                        git branch: 'main', url: 'https://github.com/const2001/Issue_Tracker.git'
 
+                     
+            }
+            
+        }
+
+        stage('Copy project to vm') {
+            steps {
+               sh '''
+                    scp -r ~/workspace/flask_vm_docker_setup /var/www/flask_app
+
+                ''' 
                      
             }
             
