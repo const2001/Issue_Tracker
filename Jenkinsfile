@@ -28,15 +28,7 @@ pipeline {
                     ansible-playbook anslible_playbook_flask_setup.yml
 
                 '''  
-                // script {
-                //     try {
-                //         // Run the Ansible playbook using the 'ansible-playbook' command
-                //           def ansibleCmd = "ansible-playbook anslible_playbook_flask_setup.yml"
-                //         sh ansibleCmd
-                //     } catch (Exception e) {
-                //         currentBuild.result = 'FAILURE'
-                //         throw e
-                //     }
+             
                 }
             }
         }
