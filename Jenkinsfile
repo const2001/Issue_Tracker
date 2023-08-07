@@ -2,6 +2,8 @@ pipeline {
     agent any
 
     environment {
+        ANSIBLE_HOSTS = 'azurehosts'
+        ANSIBLE_REMOTE_USER = 'azureuser'
         ANSIBLE_PLAYBOOK = '~/workspace/ansible-pipeline/anslible_playbook_flask_setup.yml'
     }
 
@@ -21,7 +23,7 @@ pipeline {
                 script {
                     try {
                         // Run the Ansible playbook using the 'ansible-playbook' command
-                        def ansibleCmd = "ansible-playbook ${ANSIBLE_PLAYBOOK}"
+                          def ansibleCmd = "ansible-playbook -i ${ANSIBLE_HOSTS}, -u ${ANSIBLE_REMOTE_USER} ${ANSIBLE_PLAYBOOK}"
                         sh ansibleCmd
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
