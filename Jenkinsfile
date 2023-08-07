@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Clone the GitHub repository
-                git branch: 'main', url: 'https://github.com/const2001/Issue_Tracker.git'
+                git branch: 'main', url: "${env.GITHUB_URL}/${env.GITHUB_REPOSITORY}.git", credentialsId: 'your-git-credentials'
             }
         }
 
@@ -29,6 +29,7 @@ pipeline {
     post {
         always {
             // Clean up resources, if necessary
+            // You can add cleanup steps here
         }
     }
 }
