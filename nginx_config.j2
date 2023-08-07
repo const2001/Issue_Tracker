@@ -1,0 +1,20 @@
+server {
+    listen 80;
+    server_name your_domain_or_ip;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;  # Assuming your Flask app runs on port 5000
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /static {
+        alias /var/www/flask_app/Issue_Tracker/static;  # Path to your Flask app's static files
+    }
+
+    location /uploads {
+        alias /var/www/flask_app/Issue_Tracker/uploads;  # Path to your Flask app's uploaded files
+    }
+
+    # Other configuration directives as needed
+}
