@@ -16,25 +16,27 @@ pipeline {
                 // Clone the GitHub repository
                        git branch: 'main', url: 'https://github.com/const2001/Issue_Tracker.git'
 
-                sh '''
-                    cd ~/workspace/ansible-pipeline/
-
-                '''       
+                     
             }
             
         }
 
         stage('Run Ansible Playbook') {
             steps {
-                script {
-                    try {
-                        // Run the Ansible playbook using the 'ansible-playbook' command
-                          def ansibleCmd = "ansible-playbook anslible_playbook_flask_setup.yml"
-                        sh ansibleCmd
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        throw e
-                    }
+                sh '''
+                    cd ~/workspace/ansible-pipeline/
+                    ansible-playbook anslible_playbook_flask_setup.yml
+
+                '''  
+                // script {
+                //     try {
+                //         // Run the Ansible playbook using the 'ansible-playbook' command
+                //           def ansibleCmd = "ansible-playbook anslible_playbook_flask_setup.yml"
+                //         sh ansibleCmd
+                //     } catch (Exception e) {
+                //         currentBuild.result = 'FAILURE'
+                //         throw e
+                //     }
                 }
             }
         }
