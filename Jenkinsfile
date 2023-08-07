@@ -16,6 +16,10 @@ pipeline {
                 // Clone the GitHub repository
                        git branch: 'main', url: 'https://github.com/const2001/Issue_Tracker.git'
             }
+            sh '''
+                    cd ~/workspace/ansible-pipeline/
+
+                '''
         }
 
         stage('Run Ansible Playbook') {
@@ -23,7 +27,7 @@ pipeline {
                 script {
                     try {
                         // Run the Ansible playbook using the 'ansible-playbook' command
-                          def ansibleCmd = "ansible-playbook -i ${ANSIBLE_HOSTS}, -u ${ANSIBLE_REMOTE_USER} ${ANSIBLE_PLAYBOOK}"
+                          def ansibleCmd = "ansible-playbook ${ANSIBLE_PLAYBOOK}"
                         sh ansibleCmd
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
