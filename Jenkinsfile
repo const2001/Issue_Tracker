@@ -15,11 +15,13 @@ pipeline {
 
                 // Clone the GitHub repository
                        git branch: 'main', url: 'https://github.com/const2001/Issue_Tracker.git'
-            }
-            sh '''
+
+                sh '''
                     cd ~/workspace/ansible-pipeline/
 
-                '''
+                '''       
+            }
+            
         }
 
         stage('Run Ansible Playbook') {
