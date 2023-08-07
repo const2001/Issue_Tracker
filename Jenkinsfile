@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        ANSIBLE_HOSTS = '~/workspace/ansible-pipeline/hosts'
-        ANSIBLE_REMOTE_USER = 'azureuser'
-        ANSIBLE_PLAYBOOK = '~/workspace/ansible-pipeline/anslible_playbook_flask_setup.yml'
-    }
 
     stages {
         stage('Preparation') {
