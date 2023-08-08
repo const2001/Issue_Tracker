@@ -171,6 +171,10 @@ def get_issues():
 
     return jsonify(serialized_issues)
 
+@app.route("/test", methods=["GET"])
+def test():
+    return "hi jenkins"
+
 
 @app.route("/update_issue/<int:issue_id>", methods=["PUT"])
 def update_issue(issue_id):
