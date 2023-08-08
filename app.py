@@ -173,7 +173,7 @@ def get_issues():
 
 @app.route("/test", methods=["GET"])
 def test():
-    return "hi jenkins yiormen"
+    return "hi jenkins  yiormen"
 
 
 @app.route("/update_issue/<int:issue_id>", methods=["PUT"])
