@@ -16,16 +16,16 @@ pipeline {
             
         }
 
-        stage('Copy project to vm') {
-            steps {
-               sh '''
-                    scp -r ~/workspace/flask_vm_docker_setup azureuser@20.0.161.2:/var/www/flask_app
+        // stage('Copy project to vm') {
+        //     steps {
+        //        sh '''
+        //             scp -r ~/workspace/flask_vm_docker_setup azureuser@20.0.161.2:/var/www/flask_app
 
-                ''' 
+        //         ''' 
                      
-            }
+        //     }
             
-        }
+        // }
 
         stage('Run Ansible Playbook') {
             steps {
