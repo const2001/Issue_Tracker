@@ -92,5 +92,6 @@ venv.bak/
 .env.local
 .env.*
 
+
 # Node.js
 node_modules/
