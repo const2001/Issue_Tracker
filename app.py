@@ -14,7 +14,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "postgresql://postgres:mysecretpassword@localhost:5432/postgres"
+] = "postgresql://postgres:mysecretpassword@20.0.161.2:5432/postgres"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "mykey"
 
