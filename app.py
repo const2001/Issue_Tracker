@@ -173,7 +173,7 @@ def get_issues():
 
 @app.route("/test", methods=["GET"])
 def test():
-    return "hi jenkins  you are idiot"
+    return "hi jenkins you are idiot"
 
 
 
