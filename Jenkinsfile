@@ -21,7 +21,7 @@ pipeline {
             steps {
                 sh '''
                     cd ~/workspace/ansible-pipeline/
-                    ansible-playbook anslible_playbook_flask_setup.yml
+                    ansible-playbook ansible_playbook_flask_db_setup.yml
 
                 '''  
              
