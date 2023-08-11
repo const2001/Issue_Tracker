@@ -52,11 +52,12 @@ class Issue(db.Model):
     user = db.relationship('User', backref=db.backref('issues', lazy='dynamic'))
     
 
-    def __init__(self, name, phone, issue_description, status):
+    def __init__(self, name, phone, issue_description, status,user_id):
         self.name = name
         self.phone = phone
         self.issue_description = issue_description
         self.status = status
+        self.user_id = user_id
 
 
 def check_role(user, role_name):
@@ -142,7 +143,7 @@ def add_issue():
                     phone=phone,
                     issue_description=issue_description,
                     status=status,
-                    user_id = user_id
+                    user_id = int(user_id)
                 )
 
                 try:
