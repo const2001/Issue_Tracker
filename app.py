@@ -60,7 +60,6 @@ class Issue(db.Model):
 def check_role(user, role_name):
     return user.role.name == role_name
 
-
 # Routes and Views
 
 
