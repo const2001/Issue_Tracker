@@ -76,7 +76,11 @@ body {
 
 .table_wrap ul li .item .issue {
   width: 45%;
-  padding: 0 15px;
+  padding: 0 45px;
+}
+.table_wrap ul li .item .username {
+  width: 15%;
+  padding: 0 25px;
 }
 
 .table_wrap ul li .item .issue span,

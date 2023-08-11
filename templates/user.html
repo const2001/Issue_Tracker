@@ -22,7 +22,7 @@
           </div>
       
           <div class="search_box">
-            <input type="text" id="search_input" placeholder="Fliter Table Using Names">
+            <input type="text" id="search_input" placeholder="Search by Issue Names">
           </div>
         </div>
       
@@ -39,6 +39,9 @@
                   </div>
                   <div class="issue">
                     <span>ISSUE</span>
+                  </div>
+                  <div class="username">
+                    <span>Username</span>
                   </div>
                   <div class="status">
                     <span>STATUS</span>
@@ -59,11 +62,15 @@
                             <span>{{ issue['phone'] }}</span>
                         </div>
                         <div class="issue">
-                            <span>{{ issue['issue'] }}</span>
+                            <span>{{ issue['issue_description'] }}</span>
                         </div>
+                        <div class="user">
+                          <span class="{{ issue['user'].lower() }}">{{ issue['user'] }}</span>
+                      </div>
                         <div class="status">
                             <span class="{{ issue['status'].lower() }}">{{ issue['status'] }}</span>
                         </div>
+                        
                     </div>
                 </li>
                 {% endfor %}

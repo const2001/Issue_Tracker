@@ -22,7 +22,6 @@ db = SQLAlchemy(app)
 
 # Models
 
-
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
@@ -49,6 +48,9 @@ class Issue(db.Model):
     phone = db.Column(db.String(50))
     issue_description = db.Column(db.String(50))
     status = db.Column(db.String(50))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', backref=db.backref('issues', lazy='dynamic'))
+    
 
     def __init__(self, name, phone, issue_description, status):
         self.name = name
@@ -60,6 +62,7 @@ class Issue(db.Model):
 def check_role(user, role_name):
     return user.role.name == role_name
 
+
 # Routes and Views
 
 
@@ -69,11 +72,11 @@ def index():
 
     if user_id:
         user = db.session.get(User, user_id)
-
+        issues = get_issues()
         if user and check_role(user, "Admin"):
-            return render_template("admin.html", username=user.username)
+            return render_template("admin.html", username=user.username, issues=issues)
         elif user and check_role(user, "User"):
-            return render_template("user.html", username=user.username)
+            return render_template("user.html", username=user.username,issues=issues)
     return render_template("login.html")
 
 
@@ -83,16 +86,17 @@ def register():
         username = request.form["username"]
         email = request.form["email"]
         password = request.form["password"]
+        role_id = request.form["role_id"]
 
-        user = User(username=username, email=email, password=password, role_id=1)
+        user = User(username=username, email=email, password=password, role_id=role_id)
         db.session.add(user)
         db.session.commit()
 
         flash("Registration successful. Please log in.")
         return redirect("/login")
 
-    roles = Role.query.all()
-    return render_template("register.html", roles=roles)
+    
+    return render_template("register.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -138,6 +142,7 @@ def add_issue():
                     phone=phone,
                     issue_description=issue_description,
                     status=status,
+                    user_id = user_id
                 )
 
                 try:
@@ -155,51 +160,65 @@ def add_issue():
 
 @app.route("/get_issues", methods=["GET"])
 def get_issues():
-    issues = db.session.query(Issue).all()
+    user_id = session.get("user_id")
 
-    serialized_issues = []
-    for issue in issues:
-        serialized_issue = {
-            "id": issue.id,
-            "name": issue.name,
-            "phone": issue.phone,
-            "issue_description": issue.issue_description,
-            "status": issue.status,
-        }
-        serialized_issues.append(serialized_issue)
+    if user_id:
+        user = db.session.get(User, user_id)
+        
+        if user and check_role(user, "User"):
+            issues = db.session.query(Issue).all()
+            serialized_issues = []
+            for issue in issues:
+                user = db.session.query(User).filter_by(id=issue.user_id).first()
+                serialized_issue = {
+                    "id": issue.id,
+                    "name": issue.name,
+                    "phone": issue.phone,
+                    "issue_description": issue.issue_description,
+                    "user" : user.username,
+                    "status": issue.status
+                }
+                serialized_issues.append(serialized_issue)
 
-    return jsonify(serialized_issues)
-
-@app.route("/test", methods=["GET"])
-def test():
-    return "hi jenkins you are idiot"
+            return (serialized_issues)
+        return("you dont have permission to see issues")
+    return render_template("login.html")
 
 
 
 @app.route("/update_issue/<int:issue_id>", methods=["PUT"])
 def update_issue(issue_id):
-    print(request.data)
-    data = request.json
-    print(data)
-    new_status = data["status"]
+    user_id = session.get("user_id")
 
-    if new_status is None:
-        return jsonify({"error": "New status not provided"}), 400
+    if user_id:
+        user = db.session.get(User, user_id)
+        
+        if user and check_role(user, "Admin"):
+    
+            print(request.data)
+            data = request.json
+            print(data)
+            new_status = data["status"]
 
-    try:
-        issue = db.session.query(Issue).get(issue_id)
-        if issue is None:
-            return jsonify({"error": "Issue not found"}), 404
+            if new_status is None:
+                return jsonify({"error": "New status not provided"}), 400
 
-        issue.status = new_status
-        db.session.commit()
+            try:
+                issue = db.session.query(Issue).get(issue_id)
+                if issue is None:
+                    return jsonify({"error": "Issue not found"}), 404
 
-        return jsonify({"message": "Issue status updated successfully"})
+                issue.status = new_status
+                db.session.commit()
 
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+                return jsonify({"message": "Issue status updated successfully"})
+
+            except Exception as e:
+             db.session.rollback()
+             return jsonify({"error": str(e)}), 500
+        return("you dont have permission to change status")  
+    return render_template("login.html")  
 
 
 if __name__ == "__main__":
-    app.run(debug=True,host='0.0.0.0',port=8000)
+    app.run(debug=True, host="0.0.0.0", port=8000)
