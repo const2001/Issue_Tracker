@@ -36,7 +36,7 @@ class User(db.Model):
     role = db.relationship("Role", backref=db.backref("users", lazy="dynamic"))
 
     def __init__(self, username, email, password, role_id):
-        self.name = username
+        self.username = username
         self.email = email
         self.password = password
         self.role_id = role_id
@@ -122,7 +122,7 @@ def login():
 def logout():
     session.pop("user_id", None)
     return redirect("/")
-
+    
 
 @app.route("/add_issue", methods=["POST", "GET"])
 def add_issue():
