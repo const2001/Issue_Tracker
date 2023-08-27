@@ -9,7 +9,6 @@
 <body>
     <div class="sidebar">
         <a href="/">Dashboard</a>
-        <a href="/add_issue">Add Issue</a>
         <a href="/">Settings</a>
         <a href="/logout">Logout</a>
     </div>
@@ -70,7 +69,9 @@
                         <div class="status">
                             <span class="{{ issue['status'].lower() }}">{{ issue['status'] }}</span>
                         </div>
-                        
+                      <div>
+                        <a href="update_issue/{{ issue.id }}" class="btn btn-success">Change Status</a>
+                      </div> 
                     </div>
                 </li>
                 {% endfor %}

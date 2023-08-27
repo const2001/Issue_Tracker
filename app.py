@@ -10,6 +10,7 @@ from flask import (
     url_for,
 )
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
 
 app = Flask(__name__)
 app.config[
@@ -17,6 +18,15 @@ app.config[
 ] = "postgresql://postgres:mysecretpassword@20.0.161.2:5432/postgres"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "mykey"
+
+# Configure Flask-Mail
+app.config['MAIL_SERVER'] = 'localhost'
+app.config['MAIL_PORT'] = 1025  # MailHog SMTP port
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_DEBUG'] = True
+
+mail = Mail(app)
 
 db = SQLAlchemy(app)
 
@@ -75,7 +85,7 @@ def index():
         user = db.session.get(User, user_id)
         issues = get_issues()
         if user and check_role(user, "Supporter"):
-            return render_template("admin.html", username=user.username, issues=issues)
+            return render_template("supporter.html", username=user.username, issues=issues)
         elif user and check_role(user, "User"):
             return render_template("user.html", username=user.username,issues=issues)
     return render_template("login.html")
@@ -92,6 +102,10 @@ def register():
         user = User(username=username, email=email, password=password, role_id=role_id)
         db.session.add(user)
         db.session.commit()
+
+        msg = Message('Issue Tracker', sender='flask_mailhog@gmail.com', recipients=[email])
+        msg.body = 'Hello, thanks for signing up!'
+        mail.send(msg)
 
         flash("Registration successful. Please log in.")
         return redirect("/login")
@@ -166,7 +180,7 @@ def get_issues():
     if user_id:
         user = db.session.get(User, user_id)
         
-        if user and check_role(user, "User"):
+        if user and (check_role(user, "User") or check_role(user, "Supporter")):
             issues = db.session.query(Issue).all()
             serialized_issues = []
             for issue in issues:
@@ -187,18 +201,27 @@ def get_issues():
 
 
 
-@app.route("/update_issue/<int:issue_id>", methods=["PUT"])
+@app.route("/update_issue/<int:issue_id>", methods=["POST", "GET"])
 def update_issue(issue_id):
     user_id = session.get("user_id")
 
     if user_id:
         user = db.session.get(User, user_id)
         
-        if user and check_role(user, "Admin"):
-    
-            print(request.data)
+        if user and check_role(user, "Supporter"):
+           if request.method == 'GET':
+            try:
+                issue = db.session.query(Issue).get(issue_id)
+                if issue is None:
+                    return jsonify({"error": "Issue not found"}), 404
+            
+            except Exception as e:
+             db.session.rollback()
+             return jsonify({"error": str(e)}), 500    
+            return render_template("change_status.html",issue=issue)
+           elif request.method == 'POST':
             data = request.json
-            print(data)
+       
             new_status = data["status"]
 
             if new_status is None:
