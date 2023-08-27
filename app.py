@@ -21,7 +21,6 @@ app.config["SECRET_KEY"] = "mykey"
 
 # Configure Flask-Mail
 app.config['MAIL_SERVER'] = 'mailhog'
-app.config['MAIL_SERVER'] = '0.0.0.0'
 app.config['MAIL_PORT'] = 1025  # MailHog SMTP port
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = False
