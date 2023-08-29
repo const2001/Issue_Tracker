@@ -20,7 +20,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "mykey"
 
 # Configure Flask-Mail
-app.config['MAIL_SERVER'] = 'mailhog-image'
+app.config['MAIL_SERVER'] = '0'
 app.config['MAIL_PORT'] = 1025  # MailHog SMTP port
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = False
