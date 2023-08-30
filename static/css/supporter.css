@@ -67,10 +67,26 @@ body {
 .table_wrap ul li .item .phone {
   width: 20%;
   padding: 0 15px;
-  margin-right: 25px;
 }
 
 .table_wrap ul li .item .status {
+  width: 15%;
+  padding: 0 5px;
+}
+.btn-success{
+  display: inline-block;
+  padding: 1px 2px;
+  background-color: #3498db;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+
+.table_wrap ul li .item .edit {
   width: 15%;
   padding: 0 15px;
 }
@@ -82,10 +98,18 @@ body {
 .table_wrap ul li .item .username {
   width: 15%;
   padding: 0 25px;
+  margin-right: 45px;
+  right: 454px;
+}
+
+.table_wrap ul li .item .phone {
+  width: 15%;
+  padding: 0 25px;
+  right: 454px;
 }
 
 .table_wrap ul li .item .issue span,
-.table_wrap ul li .item .name span {
+.table_wrap ul li .item .name .phone span {
   width: 90%;
   display: inline-block;
   white-space: nowrap;

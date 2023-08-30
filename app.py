@@ -220,9 +220,9 @@ def update_issue(issue_id):
              return jsonify({"error": str(e)}), 500    
             return render_template("change_status.html",issue=issue)
            elif request.method == 'POST':
-            data = request.json
+            data = request
        
-            new_status = data["status"]
+            new_status = data.form["status"]
 
             if new_status is None:
                 return jsonify({"error": "New status not provided"}), 400
@@ -235,7 +235,7 @@ def update_issue(issue_id):
                 issue.status = new_status
                 db.session.commit()
 
-                return jsonify({"message": "Issue status updated successfully"})
+                return redirect("/")
 
             except Exception as e:
              db.session.rollback()
