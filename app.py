@@ -106,7 +106,7 @@ def register():
         user = User(username=username, email=email, password=hashed_password, role_id=role_id)
         db.session.add(user)
         db.session.commit()
-
+  
         msg = Message('Issue Tracker', sender='flask_mailhog@gmail.com', recipients=[email])
         msg.body = 'Hello, thanks for signing up!'
         mail.send(msg)
