@@ -11,6 +11,7 @@ from flask import (
 )
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
+import bcrypt
 
 app = Flask(__name__)
 app.config[
@@ -99,7 +100,10 @@ def register():
         password = request.form["password"]
         role_id = request.form["role_id"]
 
-        user = User(username=username, email=email, password=password, role_id=role_id)
+        # Hash the password
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+        user = User(username=username, email=email, password=hashed_password, role_id=role_id)
         db.session.add(user)
         db.session.commit()
 
@@ -110,7 +114,6 @@ def register():
         flash("Registration successful. Please log in.")
         return redirect("/login")
 
-    
     return render_template("register.html")
 
 
@@ -121,7 +124,7 @@ def login():
         password = request.form["password"]
         user = User.query.filter_by(username=username).first()
 
-        if user and user.password == password:
+        if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
             session["user_id"] = user.id
             flash("Login successful.")
             return redirect("/")
@@ -130,6 +133,7 @@ def login():
             return render_template("login.html", error_message=error_message)
 
     return render_template("login.html")
+
 
 
 @app.route("/logout")
