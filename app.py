@@ -240,8 +240,7 @@ def update_issue(issue_id):
                 db.session.commit()
                 user = db.session.query(User).get(issue.user_id)
                 if user:
-                    
-                    msg = Message(f'Issue Tracker - your issue {issue.name} has changed status to {new_status}!', sender='flask_mailhog@gmail.com', recipients=[user.email])
+                    msg = Message('Issue Tracker', sender='flask_mailhog@gmail.com', recipients=[user.email])
                     msg.body = f'Hello, your issue {issue.name} has changed status to {new_status}!'
                     mail.send(msg)
                 return redirect("/")
