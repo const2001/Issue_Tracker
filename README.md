@@ -10,7 +10,7 @@ pip install -r requirements.txt
 ```vim
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "postgresql://postgres:mysecretpassword@20.0.161.2:5432/postgres"
+] = "postgresql://postgres:mysecretpassword@localhost:5432/postgres"
 ```
 ## Configure the mail server
 ```vim
