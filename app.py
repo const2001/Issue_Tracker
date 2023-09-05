@@ -20,6 +20,7 @@ app.config[
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "mykey"
 
+
 # Configure Flask-Mail
 app.config['MAIL_SERVER'] = 'mailhog-container'
 app.config['MAIL_PORT'] = 1025  # MailHog SMTP port
@@ -89,6 +90,9 @@ def index():
             return render_template("supporter.html", username=user.username, issues=issues)
         elif user and check_role(user, "User"):
             return render_template("user.html", username=user.username,issues=issues)
+        elif user and check_role(user, "Admin"):
+            return jsonify({"error" : "You need to login from admin page!"})
+        
     return render_template("login.html")
 
 
